@@ -31,6 +31,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <ClerkProvider
           appearance={{ variables: { colorPrimary: appConfig.accent } }}
+          signInFallbackRedirectUrl="/dashboard"
+          signUpFallbackRedirectUrl="/dashboard"
         >
           <Header />
           <main className="flex-1">{children}</main>
