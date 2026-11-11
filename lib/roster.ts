@@ -13,6 +13,14 @@ export type Driver = {
 };
 
 export const MAX_DRIVERS = 50;
+export const ROSTER_BYTE_LIMIT = 7000;
+
+export function fitsInMetadata(roster: Driver[]): boolean {
+  return (
+    new TextEncoder().encode(JSON.stringify({ roster })).length <=
+    ROSTER_BYTE_LIMIT
+  );
+}
 
 function isVehicle(value: unknown): value is Vehicle {
   return typeof value === "string" && vehicles.includes(value as Vehicle);

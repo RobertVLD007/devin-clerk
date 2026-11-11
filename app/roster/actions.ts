@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import {
   getRoster,
+  fitsInMetadata,
   MAX_DRIVERS,
   saveRoster,
   vehicles,
@@ -57,8 +58,10 @@ export async function addDriver(formData: FormData) {
   const roster = await getRoster(userId);
   if (roster.length >= MAX_DRIVERS) return;
 
-  roster.push({ id: crypto.randomUUID(), ...fields });
-  await saveRoster(userId, roster);
+  const newRoster = [...roster, { id: crypto.randomUUID(), ...fields }];
+  if (!fitsInMetadata(newRoster)) return;
+
+  await saveRoster(userId, newRoster);
   revalidatePath("/roster");
 }
 
@@ -74,8 +77,12 @@ export async function updateDriver(formData: FormData) {
   const driverIndex = roster.findIndex((driver) => driver.id === id);
   if (driverIndex === -1) return;
 
-  roster[driverIndex] = { ...roster[driverIndex], ...fields };
-  await saveRoster(userId, roster);
+  const newRoster = roster.map((driver, index) =>
+    index === driverIndex ? { ...driver, ...fields } : driver,
+  );
+  if (!fitsInMetadata(newRoster)) return;
+
+  await saveRoster(userId, newRoster);
   revalidatePath("/roster");
   redirect("/roster");
 }
