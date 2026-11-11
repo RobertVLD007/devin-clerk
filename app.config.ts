@@ -11,10 +11,6 @@ export const appConfig = {
   accent: "#ea580c",
   upcomingFeatures: [
     {
-      title: "Delivery team roster",
-      description: "Add, edit and list the delivery people on your team.",
-    },
-    {
       title: "Order assignment",
       description: "Assign each incoming order to a delivery person.",
     },
