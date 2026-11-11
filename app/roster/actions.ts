@@ -56,10 +56,10 @@ export async function addDriver(formData: FormData) {
   if (!fields) return;
 
   const roster = await getRoster(userId);
-  if (roster.length >= MAX_DRIVERS) return;
+  if (roster.length >= MAX_DRIVERS) redirect("/roster?error=full");
 
   const newRoster = [...roster, { id: crypto.randomUUID(), ...fields }];
-  if (!fitsInMetadata(newRoster)) return;
+  if (!fitsInMetadata(newRoster)) redirect("/roster?error=full");
 
   await saveRoster(userId, newRoster);
   revalidatePath("/roster");
@@ -80,7 +80,9 @@ export async function updateDriver(formData: FormData) {
   const newRoster = roster.map((driver, index) =>
     index === driverIndex ? { ...driver, ...fields } : driver,
   );
-  if (!fitsInMetadata(newRoster)) return;
+  if (!fitsInMetadata(newRoster)) {
+    redirect(`/roster?edit=${encodeURIComponent(id)}&error=full`);
+  }
 
   await saveRoster(userId, newRoster);
   revalidatePath("/roster");

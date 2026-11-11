@@ -7,16 +7,20 @@ import { getRoster } from "@/lib/roster";
 export default async function RosterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ edit?: string | string[] }>;
+  searchParams: Promise<{
+    edit?: string | string[];
+    error?: string | string[];
+  }>;
 }) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const [{ edit }, roster] = await Promise.all([
+  const [{ edit, error }, roster] = await Promise.all([
     searchParams,
     getRoster(userId),
   ]);
   const editId = Array.isArray(edit) ? edit[0] : edit;
+  const errorValues = Array.isArray(error) ? error : [error];
   const editingDriver = roster.find((driver) => driver.id === editId);
 
   return (
@@ -27,6 +31,12 @@ export default async function RosterPage({
           Manage your delivery people, contact details, and vehicles.
         </p>
       </div>
+      {errorValues.includes("full") && (
+        <p className="rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+          <strong>Roster is full.</strong> Your change wasn&apos;t saved: remove
+          someone or shorten long names or phone numbers, then try again.
+        </p>
+      )}
       <RosterForm driver={editingDriver} />
       {roster.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-black/15 px-5 py-8 text-center text-sm text-black/60">
