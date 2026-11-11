@@ -63,6 +63,7 @@ export async function addDriver(formData: FormData) {
 
   await saveRoster(userId, newRoster);
   revalidatePath("/roster");
+  redirect("/roster");
 }
 
 export async function updateDriver(formData: FormData) {
@@ -102,4 +103,5 @@ export async function removeDriver(formData: FormData) {
 
   await saveRoster(userId, updatedRoster);
   revalidatePath("/roster");
+  redirect("/roster");
 }
