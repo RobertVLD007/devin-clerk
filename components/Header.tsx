@@ -14,6 +14,11 @@ export function Header() {
           <Link href="/dashboard" className="hover:text-accent">
             Dashboard
           </Link>
+          <Show when="signed-in">
+            <Link href="/roster" className="hover:text-accent">
+              Roster
+            </Link>
+          </Show>
           <Show when="signed-out">
             <SignInButton
               forceRedirectUrl="/dashboard"
